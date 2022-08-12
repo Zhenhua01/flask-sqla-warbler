@@ -75,8 +75,7 @@ class UserModelTestCase(TestCase):
         # User 2 is followed by User 1
         self.assertIn(u2, u1.following)
         self.assertIn(u1, u2.followers)
-
-        #user model already has methods is_following and is_followed_by, does method work?
+    #user model already has methods is_following and is_followed_by, check methods
 
 
     def test_user_is_not_following(self):
@@ -100,7 +99,7 @@ class UserModelTestCase(TestCase):
         # User should have no messages & no followers
         self.assertEqual(len(u3.messages), 0)
         self.assertEqual(len(u3.followers), 0)
-        # can check if u3 username/email get created
+        # can check if u3 username/email gets created
         # check password is not a string text of 'password'
         # check password does start with '$2b$' to confirm hashing
 

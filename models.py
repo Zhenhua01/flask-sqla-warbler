@@ -28,7 +28,7 @@ class Follows(db.Model):
         db.ForeignKey('users.id', ondelete="cascade"),
         primary_key=True,
     )
-# is primary/secondary join because of composite primary keys?
+
 
 class User(db.Model):
     """User in the system."""
@@ -179,7 +179,7 @@ class Message(db.Model):
         db.Integer,
         db.ForeignKey('users.id', ondelete='CASCADE')
     )
-    # must enable nullable on foreign key for ondelete cascade to delete record
+    # must enable nullable on foreign key for ondelete cascade to delete records in sqlA
 
 class LikedMessage(db.Model):
     """Connection of a messages <-> liked_by_user."""

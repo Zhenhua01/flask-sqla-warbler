@@ -199,7 +199,6 @@ def start_following(follow_id):
 
     Redirect to following page for the current for the current user.
     """
-    # specify csrf form if route (not get/post), and no fields on form
 
     if not g.user:
         flash("Access unauthorized.", "danger")
@@ -268,13 +267,11 @@ def delete_user():
     Redirect to signup page.
     """
 
-    form = g.csrf_form
+    #form = g.csrf_form
 
     if not g.user:
         flash("Access unauthorized.", "danger")
         return redirect("/")
-
-
 
     do_logout()
 
@@ -293,8 +290,6 @@ def show_liked_messages(user_id):
 
     user = User.query.get_or_404(user_id)
     return render_template('users/like.html', user=user)
-
-
 
 
 ##############################################################################
@@ -354,8 +349,8 @@ def like_message(message_id):
 
         return redirect(f"/users/{g.user.id}")
 
-# can consolidate add/delete msg
-# if in, pop, if not append
+
+# can consolidate add/delete msg in same route and use append/remove db relationship
 
 @app.post('/messages/<int:message_id>/unlike')
 def unlike_message(message_id):
@@ -393,7 +388,6 @@ def delete_message(message_id):
         flash("Access unauthorized.", "danger")
         return redirect("/")
 
-    # msg = Message.query.get_or_404(message_id)
     db.session.delete(msg)
     db.session.commit()
 

@@ -33,8 +33,8 @@ db.create_all()
 
 app.config['WTF_CSRF_ENABLED'] = False
 
-# can create other TestCases based on groups of routes/functions
-# class UserTestCase(BaseViewTestCase)
+# can create other TestCases to group routes/functions 
+# try class UserTestCase(BaseViewTestCase)
 
 class BaseViewTestCase(TestCase):
     def setUp(self):
