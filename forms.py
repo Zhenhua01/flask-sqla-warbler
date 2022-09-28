@@ -20,11 +20,12 @@ class UserAddForm(FlaskForm):
 
 class EditUserForm(FlaskForm):
     """Form for edting user info"""
+
     username = StringField('Username', validators=[DataRequired()])
     email = StringField('E-mail', validators=[DataRequired(), Email()])
     image_url = StringField('(Optional) Image URL')
     header_image_url = StringField('(Optional) Header Image URL')
-    bio = StringField('Bio', validators=[DataRequired()])
+    bio = TextAreaField('(Optional) Tell us about yourself')
     password = PasswordField('Password', validators=[Length(min=6)])
 
 
@@ -36,4 +37,4 @@ class LoginForm(FlaskForm):
 
 
 class CSRFProtectForm(FlaskForm):
-    """Form just for CSRF Protection"""
+    """Form just for CSRF Protection, intentionally left blank."""

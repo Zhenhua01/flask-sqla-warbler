@@ -33,7 +33,7 @@ db.create_all()
 
 app.config['WTF_CSRF_ENABLED'] = False
 
-# can create other TestCases to group routes/functions 
+# can create other TestCases to group routes/functions
 # try class UserTestCase(BaseViewTestCase)
 
 class BaseViewTestCase(TestCase):
@@ -294,13 +294,13 @@ class BaseViewTestCase(TestCase):
                                                     "email": "test@test2.com",
                                                     "image_url":"",
                                                     "header_image_url":"",
-                                                    "bio": "",
+                                                    "bio": "new bio",
                                                     "password": "password"})
             html = resp.get_data(as_text=True)
 
             self.assertEqual(resp.status_code, 200)
             self.assertIn('change_u1', html)
-            self.assertIn('test@test2.com', html)
+            self.assertIn('new bio', html)
 
 
     def test_delete_user(self):

@@ -6,7 +6,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 
 from forms import EditUserForm, UserAddForm, LoginForm, MessageForm, CSRFProtectForm
-from models import LikedMessage, db, connect_db, User, Message
+from models import db, connect_db, User, Message, LikedMessage
 
 load_dotenv()
 
@@ -44,7 +44,8 @@ def add_user_to_g():
 
 @app.before_request
 def add_csrf_form_to_g():
-    """"""
+    """Add a CSRF-only form so that every route can use it."""
+
     g.csrf_form = CSRFProtectForm()
 
 def do_login(user):
@@ -125,11 +126,14 @@ def logout():
 
     form = g.csrf_form
 
-    if form.validate_on_submit():
+    if not form.validate_on_submit() or not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
 
-        do_logout()
-        flash('Logout successful!')
-        return redirect('/login')
+    do_logout()
+
+    flash("Logout successful!", 'success')
+    return redirect("/login")
 
 
 
@@ -200,7 +204,9 @@ def start_following(follow_id):
     Redirect to following page for the current for the current user.
     """
 
-    if not g.user:
+    form = g.csrf_form
+
+    if not form.validate_on_submit() or not g.user:
         flash("Access unauthorized.", "danger")
         return redirect("/")
 
@@ -218,7 +224,9 @@ def stop_following(follow_id):
     Redirect to following page for the current for the current user.
     """
 
-    if not g.user:
+    form = g.csrf_form
+
+    if not form.validate_on_submit() or not g.user:
         flash("Access unauthorized.", "danger")
         return redirect("/")
 
@@ -231,7 +239,7 @@ def stop_following(follow_id):
 
 @app.route('/users/profile', methods=["GET", "POST"])
 def profile():
-    """Update profile for current user."""
+    """Update profile for current user. Redirect to user page on success."""
 
     if not g.user:
         flash("Access unauthorized.", "danger")
@@ -251,13 +259,14 @@ def profile():
             form = EditUserForm(obj = g.user)
             flash("Access unauthorized.", "danger")
             return render_template('users/edit.html', form = form)
+
         else:
             db.session.commit()
             flash(f'{g.user.username} has been updated!')
             return redirect(f'/users/{g.user.id}')
 
     else:
-        return render_template('users/edit.html', form = form)
+        return render_template('users/edit.html', form = form, user_id=g.user.id)
 
 
 @app.post('/users/delete')
@@ -267,9 +276,9 @@ def delete_user():
     Redirect to signup page.
     """
 
-    #form = g.csrf_form
+    form = g.csrf_form
 
-    if not g.user:
+    if not form.validate_on_submit() or not g.user:
         flash("Access unauthorized.", "danger")
         return redirect("/")
 
@@ -336,10 +345,11 @@ def like_message(message_id):
 
     Adds message to liked_messages list for g.user
     """
-    if not g.user:
+    form = g.csrf_form
+
+    if not form.validate_on_submit() or not g.user:
         flash("Access unauthorized.", "danger")
         return redirect("/")
-    form = g.csrf_form
 
     if form.validate_on_submit():
 
@@ -349,9 +359,6 @@ def like_message(message_id):
 
         return redirect(f"/users/{g.user.id}")
 
-
-# can consolidate add/delete msg in same route and use append/remove db relationship
-
 @app.post('/messages/<int:message_id>/unlike')
 def unlike_message(message_id):
     """Unlike a message.
@@ -359,11 +366,11 @@ def unlike_message(message_id):
     Removes message from liked_messages list for g.user
     """
 
-    if not g.user:
+    form = g.csrf_form
+
+    if not form.validate_on_submit() or not g.user:
         flash("Access unauthorized.", "danger")
         return redirect("/")
-
-    form = g.csrf_form
 
     if form.validate_on_submit():
 
@@ -382,9 +389,12 @@ def delete_message(message_id):
     Check that this message was written by the current user.
     Redirect to user page on success.
     """
+
+    form = g.csrf_form
+
     msg = Message.query.get_or_404(message_id)
 
-    if not g.user or g.user.id != msg.user_id:
+    if not form.validate_on_submit() or not g.user or g.user.id != msg.user_id:
         flash("Access unauthorized.", "danger")
         return redirect("/")
 
@@ -419,6 +429,12 @@ def homepage():
 
     else:
         return render_template('home-anon.html')
+
+@app.errorhandler(404)
+def page_not_found(e):
+    """404 NOT FOUND page."""
+
+    return render_template('404.html'), 404
 
 
 ##############################################################################

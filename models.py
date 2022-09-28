@@ -182,7 +182,7 @@ class Message(db.Model):
     # must enable nullable on foreign key for ondelete cascade to delete records in sqlA
 
 class LikedMessage(db.Model):
-    """Connection of a messages <-> liked_by_user."""
+    """Connection of messages <-> liked_by_user."""
 
     __tablename__ = 'liked_messages'
 
@@ -191,6 +191,7 @@ class LikedMessage(db.Model):
         db.ForeignKey('users.id', ondelete="cascade"),
         primary_key=True,
     )
+    # must enable nullable on foreign key for ondelete cascade to delete records in sqlA
 
     message_id = db.Column(
         db.Integer,

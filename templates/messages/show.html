@@ -21,35 +21,22 @@
             {% if g.user %}
             {% if g.user.id == message.user.id %}
             <form method="POST" action="/messages/{{ message.id }}/delete">
+              {{ g.csrf_form.hidden_tag() }}
               <button class="btn btn-outline-danger">Delete</button>
             </form>
             {% elif g.user.is_following(message.user) %}
             <form method="POST" action="/users/stop-following/{{ message.user.id }}">
+              {{ g.csrf_form.hidden_tag() }}
               <button class="btn btn-primary">Unfollow</button>
             </form>
             {% else %}
             <form method="POST" action="/users/follow/{{ message.user.id }}">
+              {{ g.csrf_form.hidden_tag() }}
               <button class="btn btn-outline-primary btn-sm">
                 Follow
               </button>
             </form>
             {% endif %}
-            {% if g.user.check_liked_message(message) %}
-            <form method="POST" action="/messages/{{ message.id }}/unlike">
-              {{ g.csrf_form.hidden_tag() }}
-              <button class="btn btn-primary btn-sm">
-                <i class="bi bi-chat-right-heart-fill"></i>
-              </button>
-            </form>
-            {% elif g.user.id != message.user.id %}
-            <form method="POST" action="/messages/{{ message.id }}/like">
-              {{ g.csrf_form.hidden_tag() }}
-              <button class="btn btn-outline-primary btn-sm">
-                <i class="bi bi-chat-right-heart"></i>
-              </button>
-            </form>
-            {% endif %}
-
             {% endif %}
           </div>
           <p class="single-message">{{ message.text }}</p>
@@ -57,6 +44,23 @@
             {{ message.timestamp.strftime('%d %B %Y') }}
           </span>
         </div>
+
+        {% if g.user.check_liked_message(message) %}
+        <form method="POST" action="/messages/{{ message.id }}/unlike" class="messages-like-bottom">
+          {{ g.csrf_form.hidden_tag() }}
+          <button class="btn btn-primary btn-sm">
+            <i class="bi bi-chat-right-heart-fill"></i>
+          </button>
+        </form>
+        {% elif g.user.id != message.user.id %}
+        <form method="POST" action="/messages/{{ message.id }}/like" class="messages-like-bottom">
+          {{ g.csrf_form.hidden_tag() }}
+          <button class="btn btn-outline-primary btn-sm">
+            <i class="bi bi-chat-right-heart"></i>
+          </button>
+        </form>
+        {% endif %}
+
       </li>
     </ul>
   </div>

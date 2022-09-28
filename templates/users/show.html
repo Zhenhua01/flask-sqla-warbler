@@ -12,24 +12,6 @@
         <img src="{{ user.image_url }}" alt="user image" class="timeline-image">
       </a>
 
-      <div class="like">
-        {% if g.user.check_liked_message(message) %}
-        <form method="POST" action="/messages/{{ message.id }}/unlike">
-          {{ g.csrf_form.hidden_tag() }}
-          <button class="btn btn-primary btn-sm">
-            <i class="bi bi-chat-right-heart-fill"></i>
-          </button>
-        </form>
-        {% elif g.user.id != message.user.id %}
-        <form method="POST" action="/messages/{{ message.id }}/like">
-          {{ g.csrf_form.hidden_tag() }}
-          <button class="btn btn-outline-primary btn-sm">
-            <i class="bi bi-chat-right-heart"></i>
-          </button>
-        </form>
-        {% endif %}
-      </div>
-
       <div class="message-area">
         <a href="/users/{{ user.id }}">@{{ user.username }}</a>
         <span class="text-muted">
@@ -37,6 +19,22 @@
         </span>
         <p>{{ message.text }}</p>
       </div>
+
+      {% if g.user.check_liked_message(message) %}
+      <form method="POST" action="/messages/{{ message.id }}/unlike" class="messages-like">
+        {{ g.csrf_form.hidden_tag() }}
+        <button class="btn btn-primary btn-sm">
+          <i class="bi bi-chat-right-heart-fill"></i>
+        </button>
+      </form>
+      {% elif g.user.id != message.user.id %}
+      <form method="POST" action="/messages/{{ message.id }}/like" class="messages-like">
+        {{ g.csrf_form.hidden_tag() }}
+        <button class="btn btn-outline-primary btn-sm">
+          <i class="bi bi-chat-right-heart"></i>
+        </button>
+      </form>
+      {% endif %}
 
     </li>
 
