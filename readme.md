@@ -7,15 +7,15 @@ Project: Full stack application for users to create a profile, follow other user
 ## Available Scripts
 
 Initially requires PostgreSQL database created: "warbler" and "warbler_test".
-To seed the app database with profile users warbler:
+To seed the app database with user profiles and messages:
 
 - `python3 seed.py`
 
-App requires a `.env` file in the main directory:
+App requires a `.env` file in the main directory with:
 - SECRET_KEY = secret (or any secret key of choice)
 - DATABASE_URL = postgresql:///warbler
 
-### In the project directory and venv, you can run:
+### In the project directory and venv, you can:
 
 Install required dependencies from requirements.txt:
 
