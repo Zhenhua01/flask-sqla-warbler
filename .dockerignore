@@ -1,0 +1,13 @@
+readme.md
+Dockerfile
+docker-compose.yml
+seed.py
+.git
+.gitignore
+.DS_Store
+.env
+venv/
+generator/
+**/coverage
+**/__pycache__
+*.pyc
