@@ -1,7 +1,5 @@
 # Warbler App
 
-[Live Demo (Heroku)](https://warbler-zhl.herokuapp.com)
-
 Project: Full stack application for users to create a profile, follow other users, post public messages, and like each other's messages.
 
 ## Available Scripts
